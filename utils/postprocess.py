@@ -4,8 +4,8 @@ import pandas as pd
 def filter_duplicate(path, benchmark_path):
     df_pk = pd.read_csv(path)
     df_pk = df_pk[['Image_Path', 'Compound Name', 'Retention Time', 'Area']]
-    df_QE = pd.read_csv(benchmark_path)
-    merged_df = pd.merge(df_pk, df_QE, on='Compound Name')
+    df_b = pd.read_csv(benchmark_path)
+    merged_df = pd.merge(df_pk, df_b, on='Compound Name')
 
     grouped = merged_df.groupby('Compound Name')
     num_unique = merged_df['Image_Path'].nunique()
@@ -15,7 +15,7 @@ def filter_duplicate(path, benchmark_path):
         if len(b) > num_unique:
             grouped_ = b.groupby('Image_Path')
             for x, y in grouped_:
-                diff = abs(y.iloc[:]['Retention Time'] - y.iloc[:]['rt'])
+                diff = abs(y.iloc[:]['Retention Time'] - y.iloc[:]['RT'])
                 min_diff_index = diff.idxmin()
                 other_index = diff.index[diff.index != min_diff_index]
                 drop.append(other_index)

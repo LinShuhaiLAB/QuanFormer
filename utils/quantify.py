@@ -46,9 +46,11 @@ def quantify(mzml, prediction, info):
                 filter_x = rt[mask]
                 filter_y = intensity[mask]
                 max_intensity = max(filter_y)
-                area.append((dir, name, mz, true_rt, left, right, max_intensity, trapz(filter_y, filter_x), score))
+                max_index = filter_y.argmax()
+                max_x = filter_x[max_index]
+                area.append((dir, name, mz, true_rt, left, right, max_x, max_intensity, trapz(filter_y, filter_x), score))
         else:
-            area.append((dir, name, mz, true_rt, 0, 0, 0, 0, 0))
+            area.append((dir, name, mz, true_rt, 0, 0, 0, 0, 0, 0))
     return area
 
 

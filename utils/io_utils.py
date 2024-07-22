@@ -56,9 +56,6 @@ def get_files(path, suffix):
 
 
 def validate_file_path(path):
-    """
-    验证文件路径的有效性。
-    """
     # Initialize Path object with the provided directory path
     p = Path(path)
 
@@ -70,14 +67,8 @@ def validate_file_path(path):
 
 
 def replace_special_characters(series):
-    """
-    将字符串类型的值中的冒号和空格替换为下划线，忽略数字类型。
-    参数:
-        series (pd.Series): 需要处理的系列。
-    返回:
-        pd.Series: 替换后的系列。
-    """
-    replaced_series = series.copy()  # 创建一个副本以保持原始数据不变
+
+    replaced_series = series.copy()
 
     for index, value in series.items():
         if isinstance(value, str) and (':' in value or ' ' in value):
@@ -87,23 +78,11 @@ def replace_special_characters(series):
 
 
 def read_targeted_features(path):
-    """
-    读取并处理CSV文件，返回清理过的数据。
 
-    参数:
-        path (str): 包含特征数据的CSV文件路径。
-
-    返回:
-        pd.DataFrame: 清理后的数据，包含'Compound Name', 'm/z', 'Retention Time'列。
-    """
-    validate_file_path(path)  # 验证文件路径
+    validate_file_path(path)
 
     try:
-        # 读取CSV文件
         data = pd.read_csv(path, encoding_errors='ignore')
-
-        # 类型转换和数据清理
-
         data['Compound Name'] = replace_special_characters(data['Compound Name'])
         data['mz'] = data['mz'].astype(float)
         data['RT'] = data['RT'].astype(float)
@@ -119,7 +98,6 @@ def read_targeted_features(path):
     except FileNotFoundError:
         raise ValueError("The provided file path does not exist.")
     except ValueError as ve:
-        # 重新抛出关于文件路径的有效性错误
         if "provided path" in str(ve):
             raise ValueError("The provided path is not a file.") from ve
         else:
@@ -128,35 +106,29 @@ def read_targeted_features(path):
 
 def export_results(area, name):
     csv_file_path = f'{name}'
-    # path, name, mz, true_rt=(left+right)/2, left, right, max_intensity, trapz(filter_y, filter_x), score
+    # dir, name, mz, true_rt, left, right, max_x, max_intensity, trapz(filter_y, filter_x), score
     with open(csv_file_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Image_Path',
                          'Compound Name',
                          'M/Z',
+                         'Old RT',
                          'Retention Time',
                          'rt_min',
                          'rt_max',
                          'intensity_max',
                          'Area',
-                         'Score'])  # 写入表头
+                         'Score'])
         for item in area:
             writer.writerow([str(item[0]),
                              str(item[1]),
                              float(item[2]),
-                             float(round((item[4]+item[5])/2, 3)),
+                             float(round(item[3], 3)),
+                             float(item[6]),
                              float(item[4]),
                              float(item[5]),
-                             float(round(item[6], 3)),
                              float(round(item[7], 3)),
-                             float(round(item[8], 3))])  # 写入每行数据
+                             float(round(item[8], 3)),
+                             float(round(item[9], 3))])
 
-    print(f"数据成功写入到 {csv_file_path}")
-
-
-if __name__ == '__main__':
-    fff = get_files('/home/zzy/AutopeakV2/datatest')
-
-
-    # p = read_targeted_features('/home/zzy/AutopeakV2/peakinfotest.csv')
-    # print(p)
+    print(f"Successfully exported results to {csv_file_path}")

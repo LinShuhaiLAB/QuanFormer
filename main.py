@@ -13,11 +13,11 @@ def get_args_parser():
     parser.add_argument('--raw_data_type', default='mzML', help='type of raw data files')
 
     # paths
-    parser.add_argument('--source', default='example/HD',
+    parser.add_argument('--source', default='example/mzml',
                         help='path to raw data directory')
 
     parser.add_argument('--feature',
-                        default='example/faeture.csv',
+                        default='example/feature.csv',
                         help='path to feature file')
 
     parser.add_argument('--images_path', default='example/peak-output',
@@ -33,7 +33,7 @@ def get_args_parser():
 
     # model
     parser.add_argument('--model',
-                        default='/home/zzy/data/checkpoint0029.pth',
+                        default='checkpoint0029.pth',
                         help='path to peak detection model')
 
     # parameters
