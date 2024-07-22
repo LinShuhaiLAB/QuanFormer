@@ -2,12 +2,7 @@
 *.mzML
 *.DS_Store
 *.iml
-.idea/PeakFormer.iml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
+.idea
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
