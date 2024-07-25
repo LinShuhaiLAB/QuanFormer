@@ -48,6 +48,10 @@ def draw_eic(index, path, df_info, xic_list, args):
     rt = xic[0]
 
     compounds_count = len(xic_list[0]) - 1
+    table_rt_min = df_info[:, 2].min()
+    table_rt_max = df_info[:, 2].max()
+    assert table_rt_min > rt.min() and table_rt_max < rt.max(), \
+        f"Feature table is not compatible with the EIC. The min acceptable RT is {rt.min()}, the max is {rt.max()}"
 
     name = path[index].stem
     folder_name = f"{name}"

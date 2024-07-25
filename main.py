@@ -13,18 +13,18 @@ def get_args_parser():
     parser.add_argument('--raw_data_type', default='mzML', help='type of raw data files')
 
     # paths
-    parser.add_argument('--source', default='example/mzml',
+    parser.add_argument('--source', default='resources/example/centroid',
                         help='path to raw data directory')
 
     parser.add_argument('--feature',
-                        default='example/feature.csv',
+                        default='resources/example/QE-Test2.csv',
                         help='path to feature file')
 
-    parser.add_argument('--images_path', default='example/peak-output',
+    parser.add_argument('--images_path', default='resources/example/peak-output',
                         help='path to output eic files')
 
     parser.add_argument('--output',
-                        default='example/peak-output/area.csv',
+                        default='resources/example/peak-output/area.csv',
                         help='path to output files')
 
     parser.add_argument('--plot',
@@ -33,7 +33,7 @@ def get_args_parser():
 
     # model
     parser.add_argument('--model',
-                        default='checkpoint0029.pth',
+                        default='/Users/justzzya/checkpoint0029.pth',
                         help='path to peak detection model')
 
     # parameters
