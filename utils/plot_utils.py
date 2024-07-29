@@ -23,7 +23,7 @@ def calc_coordinate(info, intensity, rt, k, windows_size=2):
     rrt = t_rt + windows_size / 2 if t_rt + windows_size / 2 < rt[-1] else rt[-1]
     lindex = bisect.bisect_left(rt, lrt)
     rindex = bisect.bisect_right(rt, rrt)
-    if rindex - lindex > 0:
+    if rindex - lindex >= 0:
         calc_intensity = intensity[lindex:rindex]
         calc_rt = rt[lindex:rindex]
     return calc_intensity, calc_rt

@@ -1,5 +1,6 @@
 import time
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pymzml
 from pathlib import Path
@@ -18,24 +19,27 @@ def get_closest(mzmean, mz, pos):
     return res
 
 
-def extract_eic(path, df_info, ppm=10):
+def extract_eic(path, df_info, ppm):
     _ppm = ppm * 1e-6
+    flag = 0
     with pymzml.run.Reader(path) as run:
         matrix = np.zeros(((len(df_info)) + 1, run.get_spectrum_count()))
         for i, spec in enumerate(run):
             if spec.ms_level == 1:
                 _mzs = spec.mz
                 _intensities = spec.i
-
+                matrix[0, i-flag] = spec.scan_time[0]
                 for index in range(len(df_info)):
                     f_mz = df_info[index][1]
                     indices = np.searchsorted(_mzs, f_mz)
                     closest = get_closest(_mzs, f_mz, indices)
                     if abs(_mzs[closest] - f_mz) < f_mz * _ppm:
-                        matrix[index + 1, i] = _intensities[closest]
+                        matrix[index + 1, i-flag] = _intensities[closest]
                     else:
-                        matrix[index + 1, i] = 0
-            matrix[0, i] = spec.scan_time[0]
+                        matrix[index + 1, i-flag] = 0
+            else:
+                flag = flag + 1
+        matrix = matrix[:, :len(matrix[0])-flag]
         return matrix
 
 
@@ -73,12 +77,10 @@ def build(paths, info, plot, args):
 
     processes_number = args.processes_number
     df_info = info.values
+    ppm = args.ppm
     # 提取EIC数据
-    start_time = time.time()
-    xic_list = Parallel(n_jobs=processes_number)(delayed(extract_eic)(path, df_info)
+    xic_list = Parallel(n_jobs=processes_number)(delayed(extract_eic)(path, df_info, ppm)
                                                  for path in paths)
-    end_time = time.time()
-    print(f"extract EIC data time: {end_time - start_time}")
 
     if plot:
         if processes_number == 1:
@@ -88,6 +90,5 @@ def build(paths, info, plot, args):
             (Parallel(n_jobs=processes_number)
              (delayed(draw_eic)(i, paths, df_info, xic_list, args)
               for i in range(len(xic_list))))
-    print(time.time() - end_time)
 
     return xic_list
