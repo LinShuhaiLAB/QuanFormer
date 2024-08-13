@@ -1,4 +1,4 @@
-mz,rt,Compound Name,formula,Fold change,p-value,Compound concentration ratio
+mz,RT,Compound Name,formula,Fold change,p-value,Compound concentration ratio
 371.1617,18.85,1,C21H26N2S2,0.47,0,1/2
 442.2233,17.66,2,C25H31NO6,21.23,0,16/1
 292.1118,3.01,3,C14H17N3O2S,1.91,0.019,2/1

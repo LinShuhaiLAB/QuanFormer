@@ -1,4 +1,4 @@
-Compound Name,Compound formula,mz,rt,Fold change,Compound concentration ratio,p-value
+Compound Name,Compound formula,mz,RT,Fold change,Compound concentration ratio,p-value
 1,C19H24N2S,313.1734,12.32,4.44,4/1,0
 2,C24H30F2O6,453.2079,15.8,0.05,1/16,0
 3,C26H32F2O7,495.2184,26.07,0.54,1/2,0.001

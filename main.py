@@ -15,18 +15,18 @@ def get_args_parser():
 
     parser.add_argument('--ppm', default=10, help='ppm for EIC extraction')
 
-    parser.add_argument('--source', default='resources/example/cancer',
+    parser.add_argument('--source', default='data/mzml',
                         help='path to raw data directory')
 
     parser.add_argument('--feature',
-                        default='resources/cancer_test.csv',
+                        default='data/mzml/QE-Test2.csv',
                         help='path to feature file')
 
-    parser.add_argument('--images_path', default='resources/example/cancer-output',
+    parser.add_argument('--images_path', default='data/output',
                         help='path to output eic files')
 
     parser.add_argument('--output',
-                        default='resources/example/cancer-output/area.csv',
+                        default='data/output/area.csv',
                         help='path to output files')
 
     parser.add_argument('--eic_plot',
@@ -45,7 +45,7 @@ def get_args_parser():
     # parameters
     parser.add_argument('--num_classes', default=1, help='num of classes')
 
-    parser.add_argument('--smooth_sigma', default=5, help='sigma for smoothing')
+    parser.add_argument('--smooth_sigma', default=0, help='sigma for smoothing')
 
     parser.add_argument('--processes_number', default=1, help='number of processes')
 
