@@ -1,9 +1,9 @@
 import os
 import logging
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import Signal, Slot
+from PySide6 import QtCore
+from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QPushButton, QTableWidgetItem, QHeaderView
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidgetItem, QHeaderView
 from datetime import datetime
 
 from natsort import natsorted
@@ -11,7 +11,6 @@ from GUI.ms import Ui_PeakFormer
 from main import *
 
 import pandas as pd
-import numpy as np
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -42,7 +41,7 @@ class MyWindow(QMainWindow):
         self.quantify_thread = None
 
     def bind(self):
-        self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.current_time = datetime.now().strftime("%H:%M:%S")
         self.ui.mzmlImport.clicked.connect(self.mzml_import)
         self.ui.featureImport.clicked.connect(self.feature_import)
         self.ui.modelLoad.clicked.connect(self.model_load)
@@ -133,7 +132,7 @@ class MyWindow(QMainWindow):
             self.ui.showEIC.setPixmap(QPixmap(new_path).scaled(fixed_size))
 
     def on_eic_predict_clicked(self):
-        self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.current_time = datetime.now().strftime("%H:%M:%S")
         self.ui.textBrowser.append(f"{self.current_time}  Start to predict EIC, wait for a moment please")
         if self.xic_list is not None:  # 确保xic_list已初始化且不为空
             self.predict_thread = EicPredictThread(self.args.model, self.args.images_path,
@@ -144,7 +143,7 @@ class MyWindow(QMainWindow):
             self.ui.textBrowser.append(f"{self.current_time}  No EIC data available to predict.")
 
     def on_eic_quantify_clicked(self):
-        self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.current_time = datetime.now().strftime("%H:%M:%S")
         if self.results is not None:
             self.quantify_thread = EicQuantifyThread(self.xic_list, self.results, self.xic_info)
             self.quantify_thread.quantify_finished.connect(self.on_eic_quantify_finished)
@@ -153,7 +152,7 @@ class MyWindow(QMainWindow):
             self.ui.textBrowser.append(f"{self.current_time}  No prediction results available for quantification.")
 
     def on_results_export_clicked(self):
-        self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.current_time = datetime.now().strftime("%H:%M:%S")
         if self.area is not None:
             output_path, _ = QFileDialog.getSaveFileName(self, "Save Results", "", "CSV Files (*.csv)")
             if output_path:
@@ -168,10 +167,10 @@ class MyWindow(QMainWindow):
             self.ui.textBrowser.append(f"{self.current_time}  No quantitative results available for export.")
 
     def on_eic_postprogress_clicked(self):
-        self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.current_time = datetime.now().strftime("%H:%M:%S")
         self.ui.textBrowser.append(f"{self.current_time}  Start to post process EIC")
         if self.args.output:
-            self.postprocess_thread = EicPostProcessThread(self.args.output, self.ui.tableWidget)
+            self.postprocess_thread = EicPostProcessThread(self.args.output, self.args.feature, self.ui.tableWidget)
             self.postprocess_thread.postprocess_finished.connect(
                 lambda msg: self.ui.textBrowser.append(f"{self.current_time}  {msg}"))
             self.postprocess_thread.start()
@@ -258,14 +257,15 @@ class EicBuildThread(QtCore.QThread):
     def __init__(self, mzml_path, feature, args):
         super().__init__()
 
-        self.mzml_path = mzml_path
+        self.source = mzml_path
         self.feature = feature
         self.args = args
+        self.plot = True
 
     def run(self):
         paths = get_files(self.source, "mzML")
         xic_info = read_targeted_features(self.feature)
-        xic_list = build_eic(paths, xic_info, self.args)
+        xic_list = build_eic(paths, xic_info, self.plot, self.args)
         self.build_finished.emit(
             f"Successfully built EIC", xic_info, xic_list, [d for d in os.listdir(self.args.images_path)])
 
@@ -330,14 +330,15 @@ class ResultsExportThread(QtCore.QThread):
 class EicPostProcessThread(QtCore.QThread):
     postprocess_finished = Signal(str)
 
-    def __init__(self, output, table_widget):
+    def __init__(self, output, feature, table_widget):
         super().__init__()
         self.output = output
+        self.feature = feature
         self.table_widget = table_widget
 
     def run(self):
-        post_process(self.output)
-        self.postprocess_finished.emit("Successfully postprocessed EIC")
+        post_process(self.output, self.feature)
+        self.postprocess_finished.emit("Successfully completed post-processing")
         df = pd.read_csv(self.output)
         self.populate_table(df)
 

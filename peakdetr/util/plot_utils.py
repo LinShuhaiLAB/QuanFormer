@@ -117,7 +117,7 @@ def plot_precision_recall(files, naming_scheme='iter'):
         axs[1].plot(recall, scores, c=color)
 
     axs[0].set_title('Precision / Recall')
-    axs[0].legend(names)
+    axs[0].legend(f"epoch={names}")
     axs[1].set_title('Scores / Recall')
-    axs[1].legend(names)
+    axs[1].legend(f"epoch={names}")
     return fig, axs

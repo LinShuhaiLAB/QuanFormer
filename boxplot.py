@@ -55,17 +55,34 @@ def plot_boxplotCV(path0, path1, path2, path3, Name):
     merged_df.to_excel(Name, index=False)
 
 
-# path0 = 'data/FeatureTOF.csv'
-# path1 = 'data/MZMINE3/TOF.csv'
-# path2 = 'data/PEAKDETECTIVE/peakdetective_TOF.csv'
-# path3 = 'data/Mine/TOF/post-my-tof.csv'
-# Name = 'TOF_FC.xlsx'
+# path0 = 'data/FeatureQE.csv'
+# path1 = 'data/MZMINE3/QE.csv'
+# path2 = 'data/PEAKDETECTIVE/peakdetective_QE.csv'
+# path3 = 'data/Mine/QE/post-my-qe.csv'
+# Name = 'QE_FC.xlsx'
 # plot_boxplot(path0, path1, path2, path3, Name)
 
-path0 = 'data/FeatureQE.csv'
-path1 = 'data/MZMINE3/QE.csv'
-path2 = 'data/PEAKDETECTIVE/peakdetective_QE.csv'
-path3 = 'data/Mine/QE/post-my-qe.csv'
-Name = 'QE_CV.xlsx'
-plot_boxplotCV(path0, path1, path2, path3, Name)
+path0 = 'data/FeatureQEShift.csv'
+path1 = 'data/MZMINE3/QEShift.csv'
+path2 = 'data/PEAKDETECTIVE/peakdetective_QEShift.csv'
+path3 = 'data/Mine/QEShift/post-my-qe.csv'
+Name = 'QEShift_FC.xlsx'
+plot_boxplot(path0, path1, path2, path3, Name)
+
+
+# path0 = 'data/FeatureQEShift.csv'
+# path1 = 'data/MZMINE3/QEShift.csv'
+# path2 = 'data/PEAKDETECTIVE/peakdetective_QEShift.csv'
+# path3 = 'data/Mine/QEShift/post-my-qe.csv'
+# Name = 'QEShift_CV.xlsx'
+# plot_boxplotCV(path0, path1, path2, path3, Name)
+
+# path0 = 'data/FeatureTOFShift.csv'
+# path1 = 'data/MZMINE3/TOFShift.csv'
+# path2 = 'data/PEAKDETECTIVE/peakdetective_TOFShift.csv'
+# path3 = 'data/Mine/TOFShift/post-my-tof.csv'
+# Name = 'TOFShift_CV.xlsx'
+# plot_boxplotCV(path0, path1, path2, path3, Name)
+
+
 
