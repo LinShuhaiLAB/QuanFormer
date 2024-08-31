@@ -6,9 +6,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import torchvision.transforms as T
-from peakdetr.hubconf import *
+from peakformer.hubconf import *
 from joblib import Parallel, delayed
-from peakdetr.util.misc import nested_tensor_from_tensor_list
+from peakformer.util.misc import nested_tensor_from_tensor_list
 from utils.io_utils import get_files, time_master
 
 torch.set_grad_enabled(False);
@@ -99,7 +99,7 @@ def predict(images_path, model, transform):
 
 @time_master
 def build_predictor(model_path, images_path, plot=False):
-    model = peak_detr()
+    model = peak_former()
     state_dict = torch.load(model_path, map_location='cpu')
     model.to(device)
     model.load_state_dict(state_dict["model"])

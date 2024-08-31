@@ -39,7 +39,7 @@ def get_args_parser():
 
     # model
     parser.add_argument('--model',
-                        default='/Users/justzzya/checkpoint0029.pth',
+                        default='resources/weight.pth',
                         help='path to peak detection model')
 
     # parameters

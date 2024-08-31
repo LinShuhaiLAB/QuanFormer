@@ -26,18 +26,21 @@ def filter_duplicate(path, benchmark_path):
     return single_df
 
 
-def reset_col(old_df, output_path):
+def reset_col(old_df, output_path, benchmark_path):
     old_df = old_df[['Image_Path', 'Compound Name', 'Retention Time', 'Area']]
     df_new = old_df.pivot(index='Compound Name', columns='Image_Path', values=['Retention Time', 'Area'])
 
     df_new.columns = [f'{col[1]}_{col[0]}' for col in df_new.columns]
     df_new.reset_index(inplace=False)
+
+    df_benchmarch = pd.read_csv(benchmark_path)
+    df_merged = pd.merge(df_new, df_benchmarch, "inner", on='Compound Name')
     parts = output_path.split('/')
     parts[-1] = 'post-' + parts[-1]
     new_path = '/'.join(parts)
-    df_new.to_csv(new_path)
+    df_merged.to_csv(new_path)
 
 
 def post_process(path, benchmark_path):
     df = filter_duplicate(path, benchmark_path)
-    reset_col(df, path)
+    reset_col(df, path, benchmark_path)

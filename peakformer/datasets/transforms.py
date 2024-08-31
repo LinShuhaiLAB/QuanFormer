@@ -9,8 +9,8 @@ import torch
 import torchvision.transforms as T
 import torchvision.transforms.functional as F
 
-from peakdetr.util.box_ops import box_xyxy_to_cxcywh
-from peakdetr.util.misc import interpolate
+from peakformer.util.box_ops import box_xyxy_to_cxcywh
+from peakformer.util.misc import interpolate
 
 
 def crop(image, target, region):
