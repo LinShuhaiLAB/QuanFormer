@@ -1,8 +1,0 @@
-numpy==1.24.4
-pymzml==2.5.10
-joblib==1.4.2
-pandas==2.0.3
-natsort==8.4.0
-scipy==1.10.1
-matplotlib==3.7.5
-torchvision==0.18.1
