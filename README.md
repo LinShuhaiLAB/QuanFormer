@@ -14,7 +14,7 @@ Supported formats:
 .mzML
 
 ### Operating System Compatibility
-PeakFormer has been tested successfully with:
+QuanFormer has been tested successfully with:
 - Windows 10
 - Windows 11
 - Ubuntu 20.04
