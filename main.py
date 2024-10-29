@@ -15,11 +15,11 @@ def get_args_parser():
 
     parser.add_argument('--ppm', default=10, help='ppm for EIC extraction')
 
-    parser.add_argument('--source', default='data/mzml',
+    parser.add_argument('--source', default='/Users/justzzya/TOF',
                         help='path to raw data directory')
 
     parser.add_argument('--feature',
-                        default='data/mzml/QE-Test2.csv',
+                        default='data/FeatureTOF.csv',
                         help='path to feature file')
 
     parser.add_argument('--images_path', default='data/output',
@@ -47,7 +47,7 @@ def get_args_parser():
 
     parser.add_argument('--smooth_sigma', default=0, help='sigma for smoothing')
 
-    parser.add_argument('--processes_number', default=1, help='number of processes')
+    parser.add_argument('--processes_number', default=8, help='number of processes')
 
     return parser
 
@@ -64,23 +64,23 @@ def main(args):
 
     xic_list = build_eic(paths, xic_info, args.eic_plot, args)
 
-    with open('cancer_xic_list.pkl', 'wb') as f:
-        pickle.dump(xic_list, f)
-
-    with open('cancer_xic_list.pkl', 'rb') as f:
-        xic_list_load = pickle.load(f)
-
-    #  peak detection
-    results = build_predictor(args.model, args.images_path, plot=args.plot)
-
-    # quantification
-    area = quantify(xic_list_load, results, xic_info)
-
-    # export
-    export_results(area, args.output)
-
-    # post process
-    post_process(args.output, args.feature)
+    # with open('cancer_xic_list.pkl', 'wb') as f:
+    #     pickle.dump(xic_list, f)
+    #
+    # with open('cancer_xic_list.pkl', 'rb') as f:
+    #     xic_list_load = pickle.load(f)
+    #
+    # #  peak detection
+    # results = build_predictor(args.model, args.images_path, plot=args.plot)
+    #
+    # # quantification
+    # area = quantify(xic_list_load, results, xic_info)
+    #
+    # # export
+    # export_results(area, args.output)
+    #
+    # # post process
+    # post_process(args.output, args.feature)
 
 
 if __name__ == "__main__":
