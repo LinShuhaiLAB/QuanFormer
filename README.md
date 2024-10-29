@@ -1,4 +1,4 @@
-# PeakFormer
+# QuanFormer
 
 #### Description
 QuanFormer is a novel approach written in Python (v3.8.1) for peaks (aka features) detection 
