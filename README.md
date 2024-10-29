@@ -1,9 +1,9 @@
 # PeakFormer
 
 #### Description
-PeakFormer is a novel approach written in Python (v3.8.1) for peaks (aka features) detection 
-and quantification in raw LC-MS data. The main idea of this method is to train object detection network combining 
-CNN and Transformer to identify the peaks in EIC (to judge whether it is a true peak or a false peak) and 
+QuanFormer is a novel approach written in Python (v3.8.1) for peaks (aka features) detection 
+and quantification in raw profile LC-MS data. The main idea of this method is to train object detection network combining 
+CNN and Transformer to identify the peaks in ROI (to judge whether it is a true peak or a false peak) and 
 locate the peak boundaries to integrate the area. The current method is developed for high-resolution LC-MS data for 
 metabolomics purposes, but it can also be applied to other detections that take peaks as the targets.
 
@@ -22,7 +22,7 @@ PeakFormer has been tested successfully with:
 
 
 ### Installing and running the application
-To install and run PeakFormer you should do a few simple steps:
+To install and run QuanFormer you should do a few simple steps:
 1. clone the repository:
    ```python
    numpy==1.24.4
@@ -52,7 +52,7 @@ To install and run PeakFormer you should do a few simple steps:
    1. Compound Name(numbers, unique)
    2. mz
    3. RT
-6. PeakFormer can be used in command line mode and GUI mode under Windows.
+6. QuanFormer can be used in command line mode and GUI mode under Windows.
    1. command line mode:
        ```python
        python main.py --source resources/example/mzML --feature resources/example/faeture.csv --images_path resources/example/output --output_path resources/example/output/area.csv 
