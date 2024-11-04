@@ -14,18 +14,18 @@ def get_args_parser():
 
     parser.add_argument('--type', default='mzML', help='type of raw data files')
 
-    parser.add_argument('--ppm', default=10, help='ppm for EIC extraction')
+    parser.add_argument('--ppm', default=10, help='ppm for ROI extraction')
 
-    parser.add_argument('--source', default='resources/example/mzML',
+    parser.add_argument('--source', default='resources/example',
                         help='path to raw data directory')
 
     # targeted features
     parser.add_argument('--feature',
-                        default="resources/example/faeture.csv",
+                        default="resources/test_feature.csv",
                         help='path to feature file')
 
-    # CentWave for untargeted features
-    parser.add_argument('--polarity', default='negative', help='polarity')
+    # CentWave for untargeted features, only set when using untargeted mode.
+    parser.add_argument('--polarity', default='', help='polarity')
 
     parser.add_argument('--peakWidth', default=(5, 50), help='peak width')
 
@@ -40,15 +40,15 @@ def get_args_parser():
 
     # prediction
     parser.add_argument('--images_path', default="resources/example/output",
-                        help='path to output eic files')
+                        help='path to output roi files')
 
     parser.add_argument('--output',
                         default="resources/example/output/area.csv",
                         help='path to output files')
 
-    parser.add_argument('--eic_plot',
+    parser.add_argument('--roi_plot',
                         default=True,
-                        help='plot EICs or not, first use must be True')
+                        help='plot ROIs or not, first use must be True')
 
     parser.add_argument('--plot',
                         default=True,
@@ -56,7 +56,7 @@ def get_args_parser():
 
     # model
     parser.add_argument('--model',
-                        default=r"checkpoint0029.pth",
+                        default='resources/checkpoint0029.pth ',
                         help='path to peak detection model')
 
     # parameters
@@ -81,9 +81,9 @@ def main(args):
         xic_info = get_targeted_features(args.source, args.polarity, args.ppm, args.peakWidth,
                                          args.s2n, args.noise, args.mzDiff, args.prefilter)
 
-    # EIC build
+    # ROI build
 
-    xic_list = build_roi(paths, xic_info, args.eic_plot, args)
+    xic_list = build_roi(paths, xic_info, args.roi_plot, args)
     import pickle
     with open('xic_list.pkl', 'wb') as f:
         pickle.dump(xic_list, f)
