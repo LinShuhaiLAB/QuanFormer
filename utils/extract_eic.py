@@ -5,7 +5,6 @@ import numpy as np
 import pymzml
 from pathlib import Path
 from joblib import Parallel, delayed
-from tqdm import tqdm
 
 from utils.io_utils import time_master
 from utils.plot_utils import smooth_xic, plot_xic, calc_coordinate

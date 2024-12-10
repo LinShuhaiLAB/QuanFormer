@@ -82,18 +82,13 @@ def main(args):
                                          args.s2n, args.noise, args.mzDiff, args.prefilter)
 
     # ROI build
-
     xic_list = build_roi(paths, xic_info, args.roi_plot, args)
-    import pickle
-    with open('xic_list.pkl', 'wb') as f:
-        pickle.dump(xic_list, f)
 
     #  peak detection
     results = build_predictor(args.model, args.images_path, plot=args.plot)
 
-    xic_list_load = pickle.load(open('xic_list.pkl', 'rb'))
     # quantification
-    area = quantify(xic_list_load, results, xic_info)
+    area = quantify(xic_list, results, xic_info)
 
     # export
     export_results(area, args.output)
