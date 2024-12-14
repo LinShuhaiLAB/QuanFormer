@@ -1,11 +1,10 @@
 import pandas as pd
 
 
-def filter_duplicate(path, benchmark_path):
+def filter_duplicate(path, xic_info):
     df_pk = pd.read_csv(path)
     df_pk = df_pk[['Image_Path', 'Compound Name', 'Retention Time', 'Area', 'Point counts']]
-    df_b = pd.read_csv(benchmark_path)
-    merged_df = pd.merge(df_pk, df_b, on='Compound Name')
+    merged_df = pd.merge(df_pk, xic_info, on='Compound Name')
 
     grouped = merged_df.groupby('Compound Name')
     num_unique = merged_df['Image_Path'].nunique()
@@ -26,24 +25,23 @@ def filter_duplicate(path, benchmark_path):
     return single_df
 
 
-def reset_col(old_df, output_path, benchmark_path):
+def reset_col(old_df, output_path, xic_info):
     old_df = old_df[['Image_Path', 'Compound Name', 'Retention Time', 'Area', 'Point counts']]
     df_new = old_df.pivot(index='Compound Name', columns='Image_Path', values=['Retention Time', 'Area', 'Point counts'])
 
     df_new.columns = [f'{col[1]}_{col[0]}' for col in df_new.columns]
     df_new.reset_index(inplace=False)
 
-    df_benchmarch = pd.read_csv(benchmark_path)
-    df_merged = pd.merge(df_new, df_benchmarch, "inner", on='Compound Name')
+    df_merged = pd.merge(df_new, xic_info, "inner", on='Compound Name')
     parts = output_path.split('/')
     parts[-1] = 'post-' + parts[-1]
     new_path = '/'.join(parts)
     df_merged.to_csv(new_path, index=False)
 
 
-def post_process(path, benchmark_path):
-    df = filter_duplicate(path, benchmark_path)
-    reset_col(df, path, benchmark_path)
+def post_process(path, xic_info):
+    df = filter_duplicate(path, xic_info)
+    reset_col(df, path, xic_info)
 
 
 if __name__ == "__main__":

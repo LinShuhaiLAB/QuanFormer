@@ -21,7 +21,7 @@ def get_closest(mzmean, mz, pos):
 
 
 def extract_eic(path, df_info, ppm):
-    _ppm = ppm * 1e-6
+    _ppm = int(ppm) * 1e-6
     flag = 0
     with pymzml.run.Reader(path) as run:
         matrix = np.zeros(((len(df_info)) + 1, run.get_spectrum_count()))

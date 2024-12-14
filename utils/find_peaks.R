@@ -1,6 +1,5 @@
 library("MSnbase")
 library("xcms")
-#library("CAMERA")
 
 args = commandArgs(trailingOnly=TRUE)
 

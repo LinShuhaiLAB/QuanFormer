@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 import os
 
 
@@ -48,31 +49,30 @@ class PeakList():
 
         self.peakList = pd.DataFrame.from_dict(data_form, orient="index")
 
-    def runXCMS(self, path, fn, polarity, ppm, peakWidth, noise=1000, s2n=1, prefilter=2, mzDiff=0.0001, minFrac=0.5):
+    def runXCMS(self, path, fn, polarity, ppm, minWidth, maxWidth, noise=1000, s2n=1, prefilter=2, mzDiff=0.0001, minFrac=0.5):
         dir = os.path.dirname(__file__)
         os.system("Rscript " + os.path.join(dir, "find_peaks.R") + " " + path + " " + polarity + " " + str(
-            ppm) + " " + str(peakWidth[0]) + " " + str(peakWidth[1]) + " " + fn + " " + str(noise) + " " + str(
+            ppm) + " " + str(minWidth) + " " + str(maxWidth) + " " + fn + " " + str(noise) + " " + str(
             s2n) + " " + str(prefilter) + " " + str(mzDiff) + " " + str(minFrac))
         self.readXCMSPeakList(os.path.join(path, fn))
 
-    def installRPackages(self):
-        dir = os.path.dirname(__file__)
-        os.system("Rscript " + os.path.join(dir, "install_R_packages.R"))
 
-
-def get_targeted_features(datadir, polarity, ms1ppm, peakWidth = (5,50), s2n=5, noise=100, mzDiff=0.015, prefilter=3):
+def get_features(datadir, polarity, ms1ppm, minWidth, maxWidth, s2n=5, noise=100, mzDiff=0.015, prefilter=3):
 
     det = PeakList()
-    det.runXCMS(datadir, "xcms_peak_list.csv", polarity, ms1ppm, peakWidth,s2n=s2n,noise=noise,mzDiff=mzDiff,prefilter=prefilter)
+    det.runXCMS(datadir, "xcms_peak_list.csv", polarity, ms1ppm, minWidth, maxWidth,s2n=s2n,noise=noise,mzDiff=mzDiff,prefilter=prefilter)
     det.readXCMSPeakList(os.path.join(datadir, "xcms_peak_list.csv"))
     peakList = pd.DataFrame(det.peakList)
-    peakList.to_csv(os.path.join(datadir, "peak_list.csv"), index=False)
+
     peakList = peakList.iloc[:, :2].reset_index(drop=True)
     peakList.rename(columns={"rt": "RT"}, inplace=True)
     peakList['Compound Name'] = range(1, len(peakList)+1)
     peakList.insert(0, 'Compound Name', peakList.pop('Compound Name'))
+    peakList.to_csv(os.path.join(datadir, "peak_list.csv"), index=False)
+    os.remove(os.path.join(datadir, "xcms_peak_list.csv"))
+    new_file_path = Path(datadir).parent
+    os.rename(os.path.join(datadir, "peak_list.csv"), os.path.join(new_file_path, "peak_list.csv"))
 
     return peakList
 
 
-#

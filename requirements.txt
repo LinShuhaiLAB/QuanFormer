@@ -5,9 +5,6 @@ pandas==2.0.3
 natsort==8.4.0
 scipy==1.10.1
 matplotlib==3.7.5
-torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
 pyside6~=6.6.2
-torchvision~=0.17.2
 pillow~=10.4.0
-torch~=2.2.2
 packaging~=24.2

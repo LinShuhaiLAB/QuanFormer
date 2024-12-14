@@ -1,0 +1,7 @@
+Compound Name,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B1_Retention Time,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B2_Retention Time,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B3_Retention Time,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B1_Area,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B2_Area,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B3_Area,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B1_Point counts,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B2_Point counts,/home/zzy/testQuanFormer/QuanFormer/resources/example/output/B3_Point counts,mz,RT
+1,0.771016666667,0.76835,0.7661,2797.727,2570.42,2524.649,10.0,12.0,11.0,557.4568,0.77
+2,0.787633333333,0.8016,0.782733333333,4500.386,4016.632,4142.034,22.0,24.0,22.0,467.3733,0.79
+3,0.820883333333,0.8016,0.79935,2858.906,2678.596,2447.075,12.0,12.0,9.0,463.3432,0.81
+4,0.820883333333,0.818216666667,0.815983333333,37451.341,32445.059,33436.275,35.0,35.0,29.0,282.2522,0.82
+5,5.74165,5.755616666667,5.753366666667,9070.306,7171.0,7974.718,17.0,21.0,26.0,59.0142,5.76
+6,0.837516666667,0.83485,0.8326,5946.596,5041.46,5562.972,11.0,10.0,11.0,512.4762,0.83

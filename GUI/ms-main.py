@@ -5,11 +5,11 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidgetItem, QHeaderView
 from datetime import datetime
-
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from natsort import natsorted
 from GUI.ms import Ui_QuanFormer
 from main import *
-
 import pandas as pd
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,6 +24,7 @@ class MyWindow(QMainWindow):
         self.results = None
         self.xic_list = None
         self.xic_info = None
+        self.threshold = None
         self.paths = None
         self.current_time = None
         self.args = get_args_parser().parse_args([])
@@ -135,7 +136,7 @@ class MyWindow(QMainWindow):
         self.current_time = datetime.now().strftime("%H:%M:%S")
         self.ui.textBrowser.append(f"{self.current_time}  Start to predict ROIs, wait for a moment please")
         if self.xic_list is not None:  # 确保xic_list已初始化且不为空
-            self.predict_thread = EicPredictThread(self.args.model, self.args.images_path,
+            self.predict_thread = EicPredictThread(self.args.model, self.args.images_path, self.args.threshold,
                                                    self.ui.checkBox.isChecked())
             self.predict_thread.predict_finished.connect(self.on_eic_predict_finished)
             self.predict_thread.start()
@@ -170,7 +171,7 @@ class MyWindow(QMainWindow):
         self.current_time = datetime.now().strftime("%H:%M:%S")
         self.ui.textBrowser.append(f"{self.current_time}  Start to post process ROIs")
         if self.args.output:
-            self.postprocess_thread = EicPostProcessThread(self.args.output, self.args.feature, self.ui.tableWidget)
+            self.postprocess_thread = EicPostProcessThread(self.args.output, self.xic_info, self.ui.tableWidget)
             self.postprocess_thread.postprocess_finished.connect(
                 lambda msg: self.ui.textBrowser.append(f"{self.current_time}  {msg}"))
             self.postprocess_thread.start()
@@ -273,18 +274,19 @@ class EicBuildThread(QtCore.QThread):
 class EicPredictThread(QtCore.QThread):
     predict_finished = Signal(str, list)  # 发射一个字符串和结果字典
 
-    def __init__(self, model_path, images_path, with_plot):
+    def __init__(self, model_path, images_path, threshold, with_plot):
         super().__init__()
         self.model_path = model_path
         self.images_path = images_path
+        self.threshold = threshold
         self.with_plot = with_plot
 
     def run(self):
         if self.with_plot:
-            results = build_predictor(self.model_path, self.images_path, plot=True)
+            results = build_predictor(self.model_path, self.images_path, self.threshold, plot=True)
             self.predict_finished.emit("Successfully predict ROIs with plot", results)
         else:
-            results = build_predictor(self.model_path, self.images_path, plot=False)
+            results = build_predictor(self.model_path, self.images_path, self.threshold, plot=False)
             self.predict_finished.emit("Successfully predict ROIs without plot", results)
             
 
@@ -330,14 +332,14 @@ class ResultsExportThread(QtCore.QThread):
 class EicPostProcessThread(QtCore.QThread):
     postprocess_finished = Signal(str)
 
-    def __init__(self, output, feature, table_widget):
+    def __init__(self, output, xic_info, table_widget):
         super().__init__()
         self.output = output
-        self.feature = feature
+        self.xic_info = xic_info
         self.table_widget = table_widget
 
     def run(self):
-        post_process(self.output, self.feature)
+        post_process(self.output, self.xic_info)
         self.postprocess_finished.emit("Successfully completed post-processing")
         df = pd.read_csv(self.output)
         self.populate_table(df)

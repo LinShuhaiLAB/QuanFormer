@@ -8,8 +8,7 @@ import matplotlib.pyplot as plt
 import torchvision.transforms as T
 from quanformer.hubconf import *
 from joblib import Parallel, delayed
-from quanformer.util.misc import nested_tensor_from_tensor_list
-from utils.io_utils import get_files, time_master
+from utils.io_utils import time_master
 
 torch.set_grad_enabled(False);
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -75,7 +74,7 @@ def plot_single_result(pil_img, prob, boxes, save_path=""):
         plt.show()
 
 
-def predict(images_path, model, transform):
+def predict(images_path, model, transform, threshold=0.9):
     predict_results = []
     for img in images_path:
 
@@ -88,9 +87,9 @@ def predict(images_path, model, transform):
             # propagate through the model
             outputs = model([anImg])
 
-            # keep only predictions with 0.7+ confidence
+            # keep only predictions with 0.9+ confidence
             probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
-            keep = probas.max(-1).values > 0.9
+            keep = probas.max(-1).values > threshold
             # convert boxes from [0; 1] to image scales
             bboxes_scaled = rescale_bboxes(outputs['pred_boxes'][0, keep], im.size, device)
             predict_results.append((img, probas[keep].cpu().detach().numpy(), bboxes_scaled.cpu().detach().numpy()))
@@ -98,7 +97,7 @@ def predict(images_path, model, transform):
     return predict_results
 
 @time_master
-def build_predictor(model_path, images_path, plot=False):
+def build_predictor(model_path, images_path, threshold, plot=False):
     model = quan_former()
     state_dict = torch.load(model_path, map_location='cpu')
     model.to(device)
@@ -109,7 +108,7 @@ def build_predictor(model_path, images_path, plot=False):
     suffix = 'jpeg'
     paths = [str(path) for path in p.rglob(f"*.{suffix}")]
     path = natsorted(paths)
-    pre_results = predict(path, model, transform)
+    pre_results = predict(path, model, transform, threshold)
     if plot:
         plot_results(pre_results)
     return pre_results
@@ -122,7 +121,7 @@ if __name__ == "__main__":
     images_path = '/home/zzy/peak-output/Test/SA2'
     model_path = '/home/zzy/data/peak-ciou-all113-res/checkpoint0029.pth'
 
-    results = build_predictor(model_path, images_path, plot=False)
+    results = build_predictor(model_path, images_path, threshold=0.9, plot=False)
     # FALSE 969
     # TRUE 15961
     with open('/home/zzy/results-true.pkl', 'wb') as f:
