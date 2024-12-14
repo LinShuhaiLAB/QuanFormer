@@ -21,44 +21,240 @@ QuanFormer has been tested successfully with:
 - macOS Sonoma
 
 
-### Installing and running the application
+## Install Quanformer
 To install and run QuanFormer you should do a few simple steps:
-1. clone the repository:
-   ```python
-   numpy==1.24.4
-   pymzml==2.5.10
-   joblib==1.4.2
-   pandas==2.0.3
-   natsort==8.4.0
-   scipy==1.10.1
-   matplotlib==3.7.5
-   torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
-2. install requirements in the following automated way (or you can simply open reqirements.txt file and download listed libraries in any other convenient way):
-    ```python
-   pip install -r requirements.txt
-3. (option) if you want to perform the untargeted quantification, you should prepare the R environment and run the following command:
-   ```python
-   Rscript ./utils/install_R_packages.R
-   
-4. prepare mzML files in the mzML folder and feature.csv
+### 1. Create conda environment (Preinstall conda/miniconda)
+
+```shell
+conda create -n quanformer python=3.8
+```
+
+### 2. Activate environment
+
+```shell
+conda activate quanformer
+```
+
+### 3. Clone quanformer
+
+**Note**: Make sure *checkpoint0029.pth* in /resources/ is normal (>300MB)。
+
+```shell
+git clone https://github.com/LinShuhaiLAB/QuanFormer.git 
+```
+
+### 4. Install pytorch
+
+Windows/Linux with NVIDIA GPU.
+
+```shell
+torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+```
+
+### 5. Install requirements
+
+```shell
+pip install -r requirements.txt
+```
+
+## Use Quanformer
+
+### 1. Data preparation
+1. prepare mzML files in the mzML folder and feature.csv
    ```python
    ├── mzML
       ├── BC1.mzML 
       ├── BC2.mzML
       └── BC3.mzML
-5. if running the targeted quantification, you should prepare the feature.csv file in the following format, else ignore this step:
+2. if running the targeted quantification, you should prepare the feature.csv file in the following format, else ignore this step:
    ```python
    feature.csv contains the following columns:
    1. Compound Name(numbers, unique)
    2. mz
    3. RT
-6. QuanFormer can be used in command line mode and GUI mode under Windows.
-   1. command line mode:
-       ```python
-       python main.py --source resources/example/mzML --feature resources/example/faeture.csv --images_path resources/example/output --output_path resources/example/output/area.csv 
-   2. GUI mode:
-       ```python
-       python ./GUI/ms-main.py
+
+### 2. Parameter Descriptions
+
+#### General parameters
+
+- `--type`
+  
+  - **Default Value**: `'mzML'`
+  - **Description**: Type of raw data files, currently only supports the mzML format.
+- `--ppm`
+  
+  - **Default Value**: `10`
+  - **Description**: PPM value for ROI extraction.
+- `--source`
+  
+  - **Default Value**: `"resources/example"`
+  - **Description**: Path to the raw data directory.
+- `--feature`
+  
+  - **Default Value**: `"resources/test_feature.csv"`
+  - **Description**: The path of the feature file. If it is not empty, the targeted mode will be used. If it is empty, it is the untargeted mode, and the parameters required for the untargeted mode need to be set.
+- `--images_path`
+  
+  - **Default Value**: `"resources/example/output"`
+  - **Description**: Path to the output ROI files.
+- `--output`
+  
+  - **Default Value**: `"resources/example/output/area.csv"`
+  - **Description**: Path to the output files.
+- `--threshold`
+  
+  - **Default Value**: `0.99`
+    
+  - **Description**: Keep only predictions with 0.99 confidence.
+    
+- `--model`
+  
+  - **Default Value**: `"resources/checkpoint0029.pth"`
+  - **Description**: Path to the peak detection model.
+- `--roi_plot`
+  
+  - **Default Value**: `True`
+  - **Description**: Whether to plot ROIs. Must be set to `True` on the first use.
+- `--plot`
+  
+  - **Default Value**: `True`
+  - **Description**: Whether to plot predictions.
+- `--num_classes`
+  
+  - **Default Value**: `1`
+  - **Description**: Number of classes.
+- `--smooth_sigma`
+  
+  - **Default Value**: `0`
+  - **Description**: Sigma value for smoothing.
+- `--processes_number`
+  
+  - **Default Value**: `1`
+  - **Description**: Number of processes.
+
+
+#### Untargeted mode parameters for centWave algorithm.
+
+- `--polarity`
+  
+  - **Default Value**: `'positive'`
+  - **Description**: Polarity.
+- `--minWidth`
+  
+  - **Default Value**: `5`
+  - **Description**: Min peak width
+- `--maxWidth`
+  
+  - **Default Value**: `50`
+  - **Description**: Max peak width.
+- `--s2n`
+  
+  - **Default Value**: `5`
+  - **Description**: Signal-to-noise ratio.
+- `--noise`
+  
+  - **Default Value**: `100`
+  - **Description**: Noise level.
+- `--mzDiff`
+  
+  - **Default Value**: `0.005`
+  - **Description**: m/z difference.
+- `--prefilter`
+  
+  - **Default Value**: `3`
+  - **Description**: Pre-filtering parameter.
+
+### 3. Run in command line mode.
+
+#### 3.1 Targeted Mode
+
+Here is an example command showing how to use these parameters in **targeted mode**, quanformer can run in both profile and centroided data：
+
+##### 3.1.1 Profile data
+
+example download link(https://drive.google.com/drive/folders/1JopRY0mgMxRGg45iXiBgbT-i7uG3M3tS?usp=drive_link)
+
+```shell
+cd /QuanFormer
+
+python main.py --ppm 10 --source resources/example/profile --feature resources/example/profile_feature.csv --images_path resources/example/profile_output --output resources/example/profile_output/area.csv --model resources/checkpoint0029.pth
+```
+##### 3.1.2 Centroided data
+
+```shell
+python main.py --ppm 10 --source resources/example/centroided --feature resources/example/centroided_feature.csv --images_path resources/example/centroided_output --output resources/example/centroided_output/area.csv --model resources/checkpoint0029.pth
+```
+#### 3.2 Install R before running in untargeted mode
+
+* R version 4.4.2, xcms version 4.4.0
+
+In view of the possible problems in downloading R packages, I have packaged my R dependency packages and put them in the following link：
+
+
+Before using untargeted mode, you should check whether R is installed, open the terminal and input:
+
+```shell
+R --version
+```
+
+If R and Rscript are not installed, they can be installed through the following commands. ( https://cran.r-project.org/bin/linux/ubuntu/ )
+
+```shell
+sudo apt-get update
+ # update indices
+sudo apt update -qq
+# install two helper packages we need
+sudo apt install --no-install-recommends software-properties-common dirmngr
+# add the signing key (by Michael Rutter) for these repos
+# To verify key, run gpg --show-keys /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc 
+# Fingerprint: E298A3A825C0D65DFD57CBB651716619E084DAB9
+wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+# add the R 4.0 repo from CRAN -- adjust 'focal' to 'groovy' or 'bionic' as needed
+sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+
+sudo apt install --no-install-recommends r-base
+sudo apt-get install libxml2-dev
+```
+
+Then, run the following commands to install packages.(https://www.bioconductor.org/packages/release/bioc/html/xcms.html)
+
+```shell
+sudo R
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("xcms")
+BiocManager::install("MSnbase")
+install.packages("dplyr")
+```
+
+#### 3.3 Untargeted Mode
+
+Finally, to run the untargeted mode, the feature parameter needs to be set to empty or not set the feature parameter (default is empty), and at the same time, additional parameters required by the centWave algorithm such as polarity, peakWidth, s2n, noise, mzDiff, and prefilter need to be set. A complete command for running the untargeted mode is as follows:
+
+```shell
+python main.py --ppm 10 --source resources/example/centroided --polarity positive --minWidth 5 --maxWidth 50 --s2n 5 --noise 100 --mzDiff 0.005 --prefilter 3 --images_path resources/example/untargeted_centroided_output --output resources/example/untargeted_centroided_output/area.csv --model resources/checkpoint0029.pth --processes_number 2
+```
+**Note:** if "FileNotFoundError: [Errno 2] No such file or directory: 'sources/example/xcms_peak_list.csv'" appears in the terminal window, it usually means that the R environment or the dependent packages are not installed correctly. **Please return Step 2.2**.
+
+### 4. Run in GUI mode
+
+#### 4.1 Targeted Mode
+
+```shell
+python GUI/ms-main.py
+```
+#### 4.2 Untargeted Mode
+
+In view of the fact that the centWave module requires additional environmental configuration and is relatively time-consuming during operation, and after searching for ROIs, what is finally obtained is a feature table that can be read by the feature button in the GUI mode. Therefore, we suggest to first run the ROIs search module based on the centWave algorithm in the command-line mode:
+
+```shell
+python getFeature.py --source resources/example/centroided --polarity positive --ppm 10 --minWidth 5 --maxWidth 50 --s2n 5 --noise 100 --mzDiff 0.015 --prefilter 3
+```
+   
+
+
 
    ![GUI](resources/GUI.png)  
-The more detailed instruction on how to train and run the new model is available via the link.
+The more detailed instruction on how to train and run the new model is available via the [link](guide.pdf).
