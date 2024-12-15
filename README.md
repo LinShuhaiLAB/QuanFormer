@@ -5,7 +5,7 @@ QuanFormer is a novel approach written in Python (v3.8.1) for peaks (aka feature
 and quantification in raw profile LC-MS data. The main idea of this method is to train object detection network combining 
 CNN and Transformer to identify the peaks in ROI (to judge whether it is a true peak or a false peak) and 
 locate the peak boundaries to integrate the area. The current method is developed for high-resolution LC-MS data for 
-metabolomics purposes, but it can also be applied to other detections that take peaks as the targets.
+metabolomics purposes, but it can also be applied to other detections that take peaks as the targets. 
 
 
 
@@ -257,4 +257,4 @@ python getFeature.py --source resources/example/centroided --polarity positive -
 
 
    ![GUI](resources/GUI.png)  
-The more detailed instruction on how to train and run the new model is available via the [link](guide.pdf).
+The more detailed instruction on how to train and run the new model is available via the [link](Guide.pdf).
