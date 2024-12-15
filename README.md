@@ -189,7 +189,7 @@ python main.py --ppm 10 --source resources/example/centroided --feature resource
 * R version 4.4.2, xcms version 4.4.0
 
 In view of the possible problems in downloading R packages, I have packaged my R dependency packages and put them in the following link：
-
+( https://drive.google.com/file/d/1oEIANtyXztyRkKUcWpUh3jznCG2trHwv/view?usp=drive_link )
 
 Before using untargeted mode, you should check whether R is installed, open the terminal and input:
 
