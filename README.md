@@ -268,4 +268,4 @@ python getFeature.py --source resources/example/centroided --polarity positive -
 
 
    ![GUI](resources/GUI.png)  
-The more detailed instruction on how to train and run the new model is available via the [link](Guide.pdf).
+The more detailed instruction on how to train and run the new model is available via the [link](User Guide.pdf).
