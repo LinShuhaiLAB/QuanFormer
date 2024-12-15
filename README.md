@@ -37,7 +37,7 @@ conda activate quanformer
 
 ### 3. Clone quanformer
 
-**Note**: Make sure *checkpoint0029.pth* in /resources/ is normal (>300MB)。
+**Note**: Make sure *checkpoint0029.pth* in /resources/ is normal (>300MB)。Or download from [weight](resources/checkpoint0029.pth)
 
 ```shell
 git clone https://github.com/LinShuhaiLAB/QuanFormer.git 
@@ -48,12 +48,24 @@ git clone https://github.com/LinShuhaiLAB/QuanFormer.git
 Windows/Linux with NVIDIA GPU.
 
 ```shell
-torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+```
+
+Linux without NVIDID GPU.
+```shell
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+```
+
+Windows/macOS without NVIDID GPU.
+```shell
+pip install torch torchvision torchaudio
 ```
 
 ### 5. Install requirements
 
 ```shell
+cd Quanformer
+
 pip install -r requirements.txt
 ```
 
@@ -168,21 +180,20 @@ pip install -r requirements.txt
 
 #### 3.1 Targeted Mode
 
-Here is an example command showing how to use these parameters in **targeted mode**, quanformer can run in both profile and centroided data：
+Here is an example command showing how to use these parameters in **targeted mode**, quanformer can run in both  centroided and profile data：
 
-##### 3.1.1 Profile data
+##### 3.1.1 Centroided data
+
+```shell
+python main.py --ppm 10 --source resources/example/centroided --feature resources/example/centroided_feature.csv --images_path resources/example/centroided_output --output resources/example/centroided_output/area.csv --model resources/checkpoint0029.pth
+```
+
+##### 3.1.2 Profile data
 
 example download link(https://drive.google.com/drive/folders/1JopRY0mgMxRGg45iXiBgbT-i7uG3M3tS?usp=drive_link)
 
 ```shell
-cd /QuanFormer
-
 python main.py --ppm 10 --source resources/example/profile --feature resources/example/profile_feature.csv --images_path resources/example/profile_output --output resources/example/profile_output/area.csv --model resources/checkpoint0029.pth
-```
-##### 3.1.2 Centroided data
-
-```shell
-python main.py --ppm 10 --source resources/example/centroided --feature resources/example/centroided_feature.csv --images_path resources/example/centroided_output --output resources/example/centroided_output/area.csv --model resources/checkpoint0029.pth
 ```
 #### 3.2 Install R before running in untargeted mode
 
