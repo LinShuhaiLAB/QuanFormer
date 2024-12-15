@@ -51,12 +51,12 @@ Windows/Linux with NVIDIA GPU.
 pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
 ```
 
-Linux without NVIDID GPU.
+Linux without NVIDIA GPU.
 ```shell
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
-Windows/macOS without NVIDID GPU.
+Windows/macOS without NVIDIA GPU.
 ```shell
 pip install torch torchvision torchaudio
 ```
